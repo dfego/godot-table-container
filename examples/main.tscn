@@ -1,0 +1,62 @@
+[gd_scene load_steps=2 format=3 uid="uid://dmv3nunn5l8dh"]
+
+[ext_resource type="Script" path="res://addons/table_container/table_container.gd" id="1_xsshh"]
+
+[node name="TableContainer" type="VBoxContainer"]
+offset_right = 215.0
+offset_bottom = 77.0
+script = ExtResource("1_xsshh")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label1" type="Label" parent="HBoxContainer"]
+custom_minimum_size = Vector2(144, 0)
+layout_mode = 2
+text = "SHORT"
+
+[node name="Label2" type="Label" parent="HBoxContainer"]
+custom_minimum_size = Vector2(93, 0)
+layout_mode = 2
+text = "MEDIUM"
+
+[node name="Label3" type="Label" parent="HBoxContainer"]
+custom_minimum_size = Vector2(184, 0)
+layout_mode = 2
+text = "LOOOOOOOOOOOONG"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label4" type="Label" parent="HBoxContainer2"]
+custom_minimum_size = Vector2(144, 0)
+layout_mode = 2
+text = "A"
+
+[node name="Label5" type="Label" parent="HBoxContainer2"]
+custom_minimum_size = Vector2(93, 0)
+layout_mode = 2
+text = "B"
+
+[node name="Label6" type="Label" parent="HBoxContainer2"]
+custom_minimum_size = Vector2(184, 0)
+layout_mode = 2
+text = "C"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label7" type="Label" parent="HBoxContainer3"]
+custom_minimum_size = Vector2(144, 0)
+layout_mode = 2
+text = "MORETHANSHORT"
+
+[node name="Label8" type="Label" parent="HBoxContainer3"]
+custom_minimum_size = Vector2(93, 0)
+layout_mode = 2
+text = "MEDIUMISH"
+
+[node name="Label9" type="Label" parent="HBoxContainer3"]
+custom_minimum_size = Vector2(184, 0)
+layout_mode = 2
+text = "NOT LONG"
