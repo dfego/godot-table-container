@@ -49,8 +49,11 @@ func _process(_delta: float) -> void:
 ## Update the table size manually.
 ## This is required in-game if [member auto_update_in_game] is false.
 func refresh_size() -> void:
-	var rows: Array[HBoxContainer] = _get_table_children()
+	if _have_uneven_rows():
+		push_error("Table has uneven rows. Aborting update.")
+		return
 
+	var rows: Array[HBoxContainer] = _get_table_children()
 	_clear_custom_column_widths(rows)
 	_set_column_widths(rows)
 
@@ -114,3 +117,30 @@ func _get_row_children(row: HBoxContainer) -> Array[Control]:
 	var cells: Array[Control] = []
 	cells.assign(children)
 	return cells
+
+
+func _have_uneven_rows() -> bool:
+	var rows: Array[HBoxContainer] = _get_table_children()
+	if rows.size() < 2:
+		return false
+
+	var row_lengths: Array = rows.map(func(node: Node) -> int: return node.get_child_count())
+	return not row_lengths.all(func(length: int) -> bool: return length == row_lengths.front())
+
+
+func _get_configuration_warnings() -> PackedStringArray:
+	var warnings: Array[String] = []
+
+	var have_bad_children: bool = get_children().any(
+		func(node: Node) -> bool: return not node is HBoxContainer
+	)
+
+	var have_uneven_rows: bool = _have_uneven_rows()
+
+	if have_bad_children:
+		warnings.append("Children of TableContainer should all be HBoxContainer")
+
+	if have_uneven_rows:
+		warnings.append("All rows should be the same length")
+
+	return warnings
