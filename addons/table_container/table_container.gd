@@ -49,18 +49,14 @@ func _process(_delta: float) -> void:
 ## Update the table size manually.
 ## This is required in-game if [member auto_update_in_game] is false.
 func refresh_size() -> void:
-	var children: Array[Node] = get_children()
-	var rows: Array[HBoxContainer] = []  # for static typing
-	rows.assign(children)
+	var rows: Array[HBoxContainer] = _get_table_children()
 
 	_clear_custom_column_widths(rows)
 	_set_column_widths(rows)
 
 
 func _clear_custom_column_widths_for_row(row: HBoxContainer) -> void:
-	var children: Array[Node] = row.get_children()
-	var cells: Array[Control] = []  # for static typing
-	cells.assign(children)
+	var cells: Array[Control] = _get_row_children(row)
 	for cell: Control in cells:
 		cell.custom_minimum_size = Vector2.ZERO
 
@@ -76,9 +72,7 @@ func _set_column_widths(rows: Array[HBoxContainer]) -> void:
 
 	var first_row: bool = true
 	for row: HBoxContainer in rows:
-		var children: Array[Node] = row.get_children()
-		var cells: Array[Control] = []  # for static typing
-		cells.assign(children)
+		var cells: Array[Control] = _get_row_children(row)
 		if first_row:
 			first_row = false
 			for index: int in cells.size():
@@ -94,9 +88,29 @@ func _set_column_widths(rows: Array[HBoxContainer]) -> void:
 					column_widths[index] = cell_minimum_width
 
 	for row: HBoxContainer in rows:
-		var children: Array[Node] = row.get_children()
-		var cells: Array[Control] = []  # for static typing
-		cells.assign(children)
+		var cells: Array[Control] = _get_row_children(row)
 		for index: int in cells.size():
 			var cell: Control = cells[index]
 			cell.custom_minimum_size.x = column_widths[index]
+
+
+## Get the table's children as [HBoxContainer] elements. Useful for static typing.
+## Note that this filters out non-HBoxContainer nodes.
+func _get_table_children() -> Array[HBoxContainer]:
+	var children: Array[Node] = get_children().filter(
+		func(node: Node) -> bool: return node is HBoxContainer
+	)
+	var rows: Array[HBoxContainer] = []
+	rows.assign(children)
+	return rows
+
+
+## Get a row's children as [Control] elements. Useful for static typing.
+## Note that this filters out non-Container nodes.
+func _get_row_children(row: HBoxContainer) -> Array[Control]:
+	var children: Array[Node] = row.get_children().filter(
+		func(node: Node) -> bool: return node is Control
+	)
+	var cells: Array[Control] = []
+	cells.assign(children)
+	return cells
