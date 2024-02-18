@@ -38,6 +38,29 @@ class_name TableContainer extends VBoxContainer
 # Underlying variable for [member horizontal_separation]
 var _horizontal_separation: int = 0
 
+## Flag for whether to apply [member vertical_separation]
+@export var override_vertical_separation: bool = false:
+	set(value):
+		override_vertical_separation = value
+		_apply_vertical_override(value, _vertical_separation)
+		if not override_vertical_separation:
+			_vertical_separation = 0
+
+## Override for vertical padding between elements, in pixels.
+@export var vertical_separation: int:
+	set(value):
+		if not override_vertical_separation:
+			override_vertical_separation = true
+
+		_vertical_separation = value
+		_apply_vertical_override(true, value)
+	get:
+		return _vertical_separation
+
+# Underlying variable for [member vertical_separation]
+var _vertical_separation: int = 0
+
+
 # Update counter used in [_process] for the editor
 var _update_counter_editor: int = 0
 
@@ -168,7 +191,7 @@ func _get_configuration_warnings() -> PackedStringArray:
 	return warnings
 
 
-# Apply horizontal override to all child [HBoxContainer] rows based on [param on]
+# Apply separation override to all child [HBoxContainer] rows based on [param on]
 func _apply_horizontal_override(on: bool, value: int = 0) -> void:
 	var rows: Array[HBoxContainer] = _get_table_children()
 	for row: HBoxContainer in rows:
@@ -176,3 +199,11 @@ func _apply_horizontal_override(on: bool, value: int = 0) -> void:
 			row.add_theme_constant_override("separation", value)
 		else:
 			row.remove_theme_constant_override("separation")
+
+
+# Apply separation override to this node based on [param on]
+func _apply_vertical_override(on: bool, value: int = 0) -> void:
+	if on:
+		add_theme_constant_override("separation", value)
+	else:
+		remove_theme_constant_override("separation")
