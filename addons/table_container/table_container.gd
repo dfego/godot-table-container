@@ -16,6 +16,28 @@ class_name TableContainer extends VBoxContainer
 ## Update interval, in frames, if [member auto_update_in_game] is true
 @export var update_interval_in_game: int = 60
 
+## Flag for whether to apply [member horizontal_separation]
+@export var override_horizontal_separation: bool = false:
+	set(value):
+		override_horizontal_separation = value
+		_apply_horizontal_override(value, _horizontal_separation)
+		if not override_horizontal_separation:
+			_horizontal_separation = 0
+
+## Override for horizontal padding between elements, in pixels.
+@export var horizontal_separation: int:
+	set(value):
+		if not override_horizontal_separation:
+			override_horizontal_separation = true
+
+		_horizontal_separation = value
+		_apply_horizontal_override(true, value)
+	get:
+		return _horizontal_separation
+
+# Underlying variable for [member horizontal_separation]
+var _horizontal_separation: int = 0
+
 # Update counter used in [_process] for the editor
 var _update_counter_editor: int = 0
 
@@ -144,3 +166,13 @@ func _get_configuration_warnings() -> PackedStringArray:
 		warnings.append("All rows should be the same length")
 
 	return warnings
+
+
+# Apply horizontal override to all child [HBoxContainer] rows based on [param on]
+func _apply_horizontal_override(on: bool, value: int = 0) -> void:
+	var rows: Array[HBoxContainer] = _get_table_children()
+	for row: HBoxContainer in rows:
+		if on:
+			row.add_theme_constant_override("separation", value)
+		else:
+			row.remove_theme_constant_override("separation")
