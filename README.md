@@ -20,6 +20,7 @@ That's basically what this does.
 
 To use, simply create a new `TableContainer` node in your scene tree.
 Add `HBoxContainer` nodes to represent the rows, and ensure that all rows have the same number of columns (children).
+The columns will automatically adjust.
 
 The `TableContainer` node has four exported properties:
 
