@@ -4,67 +4,87 @@ class_name TableContainer extends VBoxContainer
 ##
 ## The purpose of this class is to keep all nodes within a column the same width.
 
-## Whether or not to auto-update in [method _process] for the editor
-@export var auto_update_in_editor: bool = true
+# ======== Property Helpers ========
+
+# Dictionary of checkable property names. Values are the defaults.
+const _checkable_properties: Dictionary = {
+	&"update_interval_editor": 60,
+	&"update_interval_game": 60,
+	&"separation_horizontal": null,
+	&"separation_vertical": null,
+}
+
+
+# Update flags of our checkable properties to appropriately set the checkable flags.
+func _validate_property(property: Dictionary) -> void:
+	if property.name in _checkable_properties:
+		property.type = TYPE_INT
+		property.usage |= PROPERTY_USAGE_CHECKABLE | PROPERTY_USAGE_DEFAULT
+		if get(property.name) != null:
+			property.usage |= PROPERTY_USAGE_CHECKED
+
+
+# Overridden function that indicates which properties get handled by [method _property_get_revert].
+func _property_can_revert(property_name: StringName) -> bool:
+	return property_name in _checkable_properties
+
+
+# Overridden function that handles default values for the methods specified in [method _property_can_revert].
+func _property_get_revert(property_name: StringName) -> Variant:
+	return _checkable_properties.get(property_name)
+
+
+# ======== Exported Properties ========
 
 ## Update interval for the editor, in frames, if [member auto_update_in_editor] is true
-@export var update_interval_in_editor: int = 60
-
-## Whether or not to auto-update in [method _process] for the game
-@export var auto_update_in_game: bool = true
+@export_range(1, 60) var update_interval_editor = _checkable_properties[&"update_interval_editor"]
 
 ## Update interval, in frames, if [member auto_update_in_game] is true
-@export var update_interval_in_game: int = 60
-
-## Flag for whether to apply [member horizontal_separation]
-@export var override_horizontal_separation: bool = false:
-	set(value):
-		override_horizontal_separation = value
-		_apply_horizontal_override(value, _horizontal_separation)
-		if not override_horizontal_separation:
-			_horizontal_separation = 0
+@export_range(1, 60) var update_interval_game = _checkable_properties[&"update_interval_game"]
 
 ## Override for horizontal padding between elements, in pixels.
-@export var horizontal_separation: int:
+var separation_horizontal = null:
 	set(value):
-		if not override_horizontal_separation:
-			override_horizontal_separation = true
-
-		_horizontal_separation = value
-		_apply_horizontal_override(true, value)
-	get:
-		return _horizontal_separation
-
-# Underlying variable for [member horizontal_separation]
-var _horizontal_separation: int = 0
-
-## Flag for whether to apply [member vertical_separation]
-@export var override_vertical_separation: bool = false:
-	set(value):
-		override_vertical_separation = value
-		_apply_vertical_override(value, _vertical_separation)
-		if not override_vertical_separation:
-			_vertical_separation = 0
+		separation_horizontal = value
+		if separation_horizontal != null:
+			_apply_horizontal_override(true, value)
+		else:
+			_apply_horizontal_override(false)
 
 ## Override for vertical padding between elements, in pixels.
-@export var vertical_separation: int:
+var separation_vertical = null:
 	set(value):
-		if not override_vertical_separation:
-			override_vertical_separation = true
-
-		_vertical_separation = value
-		_apply_vertical_override(true, value)
-	get:
-		return _vertical_separation
-
-# Underlying variable for [member vertical_separation]
-var _vertical_separation: int = 0
+		separation_vertical = value
+		if separation_vertical != null:
+			_apply_vertical_override(true, value)
+		else:
+			_apply_vertical_override(false)
 
 
-# Update counter used in [_process] for the editor
+## Apply separation override to all child [HBoxContainer] rows based on [param on]
+func _apply_horizontal_override(on: bool, value: int = 0) -> void:
+	var rows: Array[HBoxContainer] = _get_table_children()
+	for row: HBoxContainer in rows:
+		if on:
+			row.add_theme_constant_override("separation", value)
+		else:
+			row.remove_theme_constant_override("separation")
+
+
+## Apply separation override to this node based on [param on]
+func _apply_vertical_override(on: bool, value: int = 0) -> void:
+	if on:
+		add_theme_constant_override("separation", value)
+	else:
+		remove_theme_constant_override("separation")
+
+
+# ======== End Exporoted Properties ========
+
+# Update counter used in [member _process] for the editor
 var _update_counter_editor: int = 0
 
-# Update counter used in [_process] for the game
+# Update counter used in [member _process] for the game
 var _update_counter_game: int = 0
 
 
@@ -80,15 +100,15 @@ func _ready() -> void:
 ## Update the table based on the exported parameters.
 func _process(_delta: float) -> void:
 	if Engine.is_editor_hint():
-		if auto_update_in_editor:
+		if update_interval_editor != null && update_interval_editor > 0:
 			if _update_counter_editor == 0:
 				refresh_size()
-			_update_counter_editor = (_update_counter_editor + 1) % update_interval_in_editor
+			_update_counter_editor = (_update_counter_editor + 1) % update_interval_editor
 	else:
-		if auto_update_in_game:
+		if update_interval_game != null && update_interval_game > 0:
 			if _update_counter_game == 0:
 				refresh_size()
-			_update_counter_game = (_update_counter_game + 1) % update_interval_in_game
+			_update_counter_game = (_update_counter_game + 1) % update_interval_game
 
 
 ## Update the table size manually.
@@ -164,6 +184,9 @@ func _get_row_children(row: HBoxContainer) -> Array[Control]:
 	return cells
 
 
+# ======== Warnings and Helpers ========
+
+
 func _have_uneven_rows() -> bool:
 	var rows: Array[HBoxContainer] = _get_table_children()
 	if rows.size() < 2:
@@ -189,21 +212,3 @@ func _get_configuration_warnings() -> PackedStringArray:
 		warnings.append("All rows should be the same length")
 
 	return warnings
-
-
-# Apply separation override to all child [HBoxContainer] rows based on [param on]
-func _apply_horizontal_override(on: bool, value: int = 0) -> void:
-	var rows: Array[HBoxContainer] = _get_table_children()
-	for row: HBoxContainer in rows:
-		if on:
-			row.add_theme_constant_override("separation", value)
-		else:
-			row.remove_theme_constant_override("separation")
-
-
-# Apply separation override to this node based on [param on]
-func _apply_vertical_override(on: bool, value: int = 0) -> void:
-	if on:
-		add_theme_constant_override("separation", value)
-	else:
-		remove_theme_constant_override("separation")

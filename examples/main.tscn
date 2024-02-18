@@ -6,57 +6,77 @@
 offset_right = 215.0
 offset_bottom = 77.0
 script = ExtResource("1_xsshh")
+separation_horizontal = null
+separation_vertical = null
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
 
 [node name="Label1" type="Label" parent="HBoxContainer"]
-custom_minimum_size = Vector2(144, 0)
+custom_minimum_size = Vector2(54, 0)
 layout_mode = 2
-text = "SHORT"
+text = "Modify"
 
 [node name="Label2" type="Label" parent="HBoxContainer"]
-custom_minimum_size = Vector2(93, 0)
+custom_minimum_size = Vector2(68, 0)
 layout_mode = 2
-text = "MEDIUM"
+text = "these"
 
 [node name="Label3" type="Label" parent="HBoxContainer"]
-custom_minimum_size = Vector2(184, 0)
+custom_minimum_size = Vector2(46, 0)
 layout_mode = 2
-text = "LOOOOOOOOOOOONG"
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="."]
-layout_mode = 2
-
-[node name="Label4" type="Label" parent="HBoxContainer2"]
-custom_minimum_size = Vector2(144, 0)
-layout_mode = 2
-text = "A"
-
-[node name="Label5" type="Label" parent="HBoxContainer2"]
-custom_minimum_size = Vector2(93, 0)
-layout_mode = 2
-text = "B"
-
-[node name="Label6" type="Label" parent="HBoxContainer2"]
-custom_minimum_size = Vector2(184, 0)
-layout_mode = 2
-text = "C"
+text = "labels"
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="Label7" type="Label" parent="HBoxContainer3"]
-custom_minimum_size = Vector2(144, 0)
+[node name="Label4" type="Label" parent="HBoxContainer3"]
+custom_minimum_size = Vector2(54, 0)
 layout_mode = 2
-text = "MORETHANSHORT"
+text = "with"
 
-[node name="Label8" type="Label" parent="HBoxContainer3"]
-custom_minimum_size = Vector2(93, 0)
+[node name="Label5" type="Label" parent="HBoxContainer3"]
+custom_minimum_size = Vector2(68, 0)
 layout_mode = 2
-text = "MEDIUMISH"
+text = "different"
 
-[node name="Label9" type="Label" parent="HBoxContainer3"]
-custom_minimum_size = Vector2(184, 0)
+[node name="Label6" type="Label" parent="HBoxContainer3"]
+custom_minimum_size = Vector2(46, 0)
 layout_mode = 2
-text = "NOT LONG"
+text = "text"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label7" type="Label" parent="HBoxContainer2"]
+custom_minimum_size = Vector2(54, 0)
+layout_mode = 2
+text = "more"
+
+[node name="Label8" type="Label" parent="HBoxContainer2"]
+custom_minimum_size = Vector2(68, 0)
+layout_mode = 2
+text = "and"
+
+[node name="Label9" type="Label" parent="HBoxContainer2"]
+custom_minimum_size = Vector2(46, 0)
+layout_mode = 2
+text = "less"
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label10" type="Label" parent="HBoxContainer4"]
+custom_minimum_size = Vector2(54, 0)
+layout_mode = 2
+text = "to"
+
+[node name="Label11" type="Label" parent="HBoxContainer4"]
+custom_minimum_size = Vector2(68, 0)
+layout_mode = 2
+text = "test"
+
+[node name="Label12" type="Label" parent="HBoxContainer4"]
+custom_minimum_size = Vector2(46, 0)
+layout_mode = 2
+text = "!"
