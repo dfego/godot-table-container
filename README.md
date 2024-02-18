@@ -16,6 +16,18 @@ That's basically what this does.
 * Has optional auto-update in the game and in the editor
 * Has property to seet horizontal and vertical spacing overrides to the entire table
 
+## Usage
+
+To use, simply create a new `TableContainer` node in your scene tree.
+Add `HBoxContainer` nodes to represent the rows, and ensure that all rows have the same number of columns (children).
+
+The `TableContainer` node has four exported properties:
+
+* `update_interval_editor`, if not `null`, updates the table's alignment in `_process` in the editor every number of frames specified.
+* `update_interval_game`, if not `null`, updates the table's alignment in `_process` in the game every number of frames specified.
+* `separation_horizontal`, if not `null`, applies a value to each row's `HBoxContainer` `theme_override_constants/separation` property.
+* `separation_vertical`, if not `null,` applies a value to the `TableContainer` `theme_override_constants/separation` property.
+
 ## Limitations
 
 Anything that's not listed above.
