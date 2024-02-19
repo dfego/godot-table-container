@@ -47,35 +47,29 @@ func _property_get_revert(property_name: StringName) -> Variant:
 var separation_horizontal = null:
 	set(value):
 		separation_horizontal = value
-		if separation_horizontal != null:
-			_apply_horizontal_override(true, value)
-		else:
-			_apply_horizontal_override(false)
+		_apply_horizontal_override()
 
 ## Override for vertical padding between elements, in pixels.
 var separation_vertical = null:
 	set(value):
 		separation_vertical = value
-		if separation_vertical != null:
-			_apply_vertical_override(true, value)
-		else:
-			_apply_vertical_override(false)
+		_apply_vertical_override()
 
 
-## Apply separation override to all child [HBoxContainer] rows based on [param on]
-func _apply_horizontal_override(on: bool, value: int = 0) -> void:
+## Apply separation override to all child [HBoxContainer] rows.
+func _apply_horizontal_override() -> void:
 	var rows: Array[HBoxContainer] = _get_table_children()
 	for row: HBoxContainer in rows:
-		if on:
-			row.add_theme_constant_override("separation", value)
+		if separation_horizontal != null:
+			row.add_theme_constant_override("separation", separation_horizontal)
 		else:
 			row.remove_theme_constant_override("separation")
 
 
-## Apply separation override to this node based on [param on]
-func _apply_vertical_override(on: bool, value: int = 0) -> void:
-	if on:
-		add_theme_constant_override("separation", value)
+## Apply separation override to this node.
+func _apply_vertical_override() -> void:
+	if separation_vertical != null:
+		add_theme_constant_override("separation", separation_vertical)
 	else:
 		remove_theme_constant_override("separation")
 
@@ -95,7 +89,7 @@ func _ready() -> void:
 	else:
 		_update_counter_game = 0
 
-	refresh_size()
+	refresh()
 
 
 ## Update the table based on the exported parameters.
@@ -103,18 +97,18 @@ func _process(_delta: float) -> void:
 	if Engine.is_editor_hint():
 		if update_interval_editor != null && update_interval_editor > 0:
 			if _update_counter_editor == 0:
-				refresh_size()
+				refresh()
 			_update_counter_editor = (_update_counter_editor + 1) % update_interval_editor
 	else:
 		if update_interval_game != null && update_interval_game > 0:
 			if _update_counter_game == 0:
-				refresh_size()
+				refresh()
 			_update_counter_game = (_update_counter_game + 1) % update_interval_game
 
 
-## Update the table size manually.
+## Update the table sizes manually.
 ## This is required in-game if [member auto_update_in_game] is false.
-func refresh_size() -> void:
+func refresh() -> void:
 	if _have_uneven_rows():
 		push_error("Table has uneven rows. Aborting update.")
 		return
@@ -122,6 +116,7 @@ func refresh_size() -> void:
 	var rows: Array[HBoxContainer] = _get_table_children()
 	_clear_custom_column_widths(rows)
 	_set_column_widths(rows)
+	_apply_horizontal_override()
 
 
 func _clear_custom_column_widths_for_row(row: HBoxContainer) -> void:
